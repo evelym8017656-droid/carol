@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mochila D.H</title>
+
+<style>
+body{
+    font-family: Arial, sans-serif;
+    background: #1e3c72;
+    color: white;
+    text-align: center;
+    padding: 20px;
+}
+
+button{
+    background: gold;
+    color: black;
+    border: none;
+    padding: 12px 25px;
+    font-size: 18px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+#mochila{
+    display: none;
+    margin-top: 20px;
+    background: white;
+    color: black;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+</style>
+</head>
+
+<body>
+
+<h1>🎒 Mochila</h1>
+
+<button onclick="abrirMochila()">Abrir Mochila</button>
+
+<div id="mochila">
+    <h2>D.H</h2>
+
+    <p>
+        A internet oferece diversas oportunidades para jovens aprenderem,
+        criarem projetos e desenvolverem habilidades em programação web.
+    </p>
+
+    <p>
+        O empreendedorismo digital pode ser uma experiência positiva quando
+        acontece de forma equilibrada, sem prejudicar os estudos e a saúde.
+    </p>
+
+    <p>
+        O mais importante é investir no aprendizado, desenvolver conhecimentos
+        técnicos e construir uma carreira sólida para o futuro.
+    </p>
+</div>
+
+<script>
+function abrirMochila() {
+    var mochila = document.getElementById("mochila");
+
+    if (mochila.style.display === "block") {
+        mochila.style.display = "none";
+    } else {
+        mochila.style.display = "block";
+    }
+}
+</script>
+
+</body>
+</html>
