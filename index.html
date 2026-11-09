@@ -1,79 +1,701 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mochila D.H</title>
-
+<title>Elegance Bank | Gestão Financeira</title>
 <style>
-body{
-    font-family: Arial, sans-serif;
-    background: #1e3c72;
-    color: white;
-    text-align: center;
-    padding: 20px;
+:root {
+--roxo:#8200ff;
+--escuro:#260044;
+--lilas:#eee4ff;
+--fundo:#f7f5fc;
+--texto:#27213a;
+--verde:#159b69;
+--vermelho:#df4765;
 }
-
-button{
-    background: gold;
-    color: black;
-    border: none;
-    padding: 12px 25px;
-    font-size: 18px;
-    border-radius: 8px;
-    cursor: pointer;
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
+body{background:var(--fundo);color:var(--texto)}
+button,input,select{font:inherit}
+button{cursor:pointer;border:0}
+.layout{display:flex;min-height:100vh}
+.sidebar{
+width:255px;background:linear-gradient(180deg,#260044,#51009a,#7800c9);
+color:white;padding:22px 17px;position:fixed;inset:0 auto 0 0;
+overflow-y:auto;z-index:5
 }
-
-#mochila{
-    display: none;
-    margin-top: 20px;
-    background: white;
-    color: black;
-    padding: 20px;
-    border-radius: 10px;
-    max-width: 600px;
-    margin-left: auto;
-    margin-right: auto;
+.perfil-usuario{
+text-align:center;padding:20px 12px;margin-bottom:18px;
+background:linear-gradient(145deg,#ffffff20,#ffffff08);
+border:1px solid #ffffff30;border-radius:18px;color:white
+}
+.avatar-branco{
+width:76px;height:76px;margin:0 auto 12px;border-radius:50%;
+background:#ffffff25;border:2px solid white;
+display:flex;align-items:center;justify-content:center
+}
+.perfil-usuario h3{font-size:17px;margin-bottom:6px}
+.perfil-usuario p{font-size:11px;line-height:1.8;color:#ead9ff;text-align:left}
+.perfil-usuario .identificacao{text-align:center;font-size:11px}
+.linha-perfil{height:1px;background:#ffffff35;margin:13px 0}
+.logo{font-size:22px;font-weight:bold;padding:8px 12px 22px}
+.logo span{color:#d9b8ff}
+.perfil{
+background:#ffffff18;border:1px solid #ffffff20;
+border-radius:15px;padding:15px;margin-bottom:20px
+}
+.perfil strong{display:block;margin-bottom:5px}
+.perfil small{color:#e2ceff}
+.menu-titulo{
+color:#c9a4f5;font-size:11px;font-weight:bold;
+margin:20px 12px 9px;letter-spacing:1.5px
+}
+.menu button{
+display:block;width:100%;text-align:left;padding:12px;
+margin:4px 0;color:#f4eaff;background:transparent;
+border-radius:10px;transition:.2s
+}
+.menu button:hover,.menu button.ativo{background:#ffffff25;color:white}
+.menu button span{margin-right:8px}
+.conteudo{margin-left:255px;width:calc(100% - 255px);padding:30px}
+.topo{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:28px}
+.topo h1{font-size:27px;margin-bottom:6px}
+.topo p{color:#777184;font-size:14px}
+.status{background:#e7f8ef;color:#168653;padding:9px 14px;border-radius:30px;font-size:12px;font-weight:bold}
+.pagina{display:none}
+.pagina.ativa{display:block}
+.cartao{
+background:white;padding:22px;border-radius:17px;
+box-shadow:0 5px 22px #35205d0b;border:1px solid #eeeaf5;margin-bottom:20px
+}
+.cartao h3{font-size:16px;margin-bottom:15px}
+.saldo-principal{
+background:linear-gradient(115deg,#4b0082,#8200ff,#a64dff);
+color:white;border-radius:21px;padding:28px;min-height:205px;
+box-shadow:0 12px 28px #6f20bd35;margin-bottom:20px
+}
+.rotulo{color:#e6d4ff;font-size:13px}
+.saldo-principal h2{font-size:36px;margin:14px 0}
+.conta-info{display:flex;flex-wrap:wrap;gap:25px;margin-top:24px;color:#e9d9ff;font-size:12px}
+.conta-info strong{color:white}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.indicador{background:white;border-radius:15px;padding:20px;border:1px solid #eeeaf5;box-shadow:0 4px 16px #35205d08}
+.indicador small{color:#777184}
+.indicador h2{font-size:23px;margin-top:10px}
+.verde{color:var(--verde)}
+.vermelho{color:var(--vermelho)}
+.roxo{color:var(--roxo)}
+.duas-colunas{display:grid;grid-template-columns:1.2fr .8fr;gap:18px;margin-top:20px}
+.botao{padding:12px 17px;background:var(--roxo);color:white;border-radius:9px;font-weight:bold;transition:.2s}
+.botao:hover{background:#4b0082;transform:translateY(-2px)}
+.botao-secundario{background:var(--lilas);color:#6500bd}
+.botao-perigo{background:#ffe9ed;color:#c52f50}
+.formulario{display:grid;grid-template-columns:repeat(2,1fr);gap:13px}
+.campo{display:flex;flex-direction:column;gap:7px}
+.campo label{font-size:13px;font-weight:bold;color:#514b60}
+.campo input,.campo select{
+width:100%;padding:12px;border:1px solid #ded8e9;
+border-radius:9px;outline:none;background:white
+}
+.campo input:focus,.campo select:focus{border-color:var(--roxo);box-shadow:0 0 0 3px #8200ff15}
+.largura-total{grid-column:1/-1}
+.acoes{display:flex;flex-wrap:wrap;gap:10px;margin-top:17px}
+.tabela-area{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:520px}
+th,td{text-align:left;padding:13px 10px;border-bottom:1px solid #eeeaf5;font-size:13px}
+th{color:#777184;font-size:12px}
+.vazio{text-align:center;color:#898394;padding:25px}
+.etiqueta{padding:5px 9px;border-radius:20px;font-size:11px;font-weight:bold}
+.entrada{background:#e4f8ee;color:#168653}
+.saida{background:#ffe9ed;color:#c52f50}
+.aviso{background:#f3edff;border-left:4px solid var(--roxo);padding:15px;border-radius:8px;color:#55476b;font-size:13px;line-height:1.6;margin:15px 0}
+.cartao-digital{
+background:linear-gradient(135deg,#290047,#6500a9,#a13cff);
+color:white;border-radius:18px;padding:23px;min-height:175px;
+max-width:390px;box-shadow:0 10px 25px #6500a933
+}
+.chip{font-size:27px;margin:18px 0}
+.numero{letter-spacing:3px;font-size:17px;margin-bottom:18px}
+.cartao-digital small{color:#e2caff}
+.cartao-digital strong{display:block;margin-top:5px}
+.bloco-planejamento{border:1px solid #e9e1f5;border-radius:13px;padding:17px;margin-bottom:15px}
+.bloco-planejamento h3{margin-bottom:7px}
+.bloco-planejamento p{font-size:12px;color:#777184;line-height:1.5;margin-bottom:12px}
+.resultado{background:#f1e9ff;border-radius:13px;padding:18px;margin-top:18px}
+.resultado h2{color:#6100b7;margin:8px 0}
+.resultado p{font-size:13px;line-height:1.6}
+.progresso{height:10px;background:#eeeaf5;border-radius:20px;overflow:hidden;margin:12px 0}
+.progresso div{height:100%;background:linear-gradient(90deg,#8200ff,#c08aff);border-radius:20px}
+.dica{padding:16px;border:1px solid #eee8f7;border-radius:12px;margin:12px 0}
+.dica h4{color:#6500bd;margin-bottom:7px}
+.dica p{color:#655e70;font-size:13px;line-height:1.6}
+.rodape{text-align:center;color:#938a9f;font-size:11px;margin:35px 0 10px}
+@media(max-width:900px){
+.sidebar{width:210px}
+.conteudo{margin-left:210px;width:calc(100% - 210px);padding:20px}
+.grid{grid-template-columns:repeat(2,1fr)}
+.duas-colunas{grid-template-columns:1fr}
+}
+@media(max-width:650px){
+.layout{display:block}
+.sidebar{position:relative;width:100%;padding:15px}
+.menu{display:grid;grid-template-columns:repeat(2,1fr);gap:3px}
+.menu-titulo{grid-column:1/-1}
+.menu button{font-size:12px;padding:10px 7px}
+.conteudo{margin:0;width:100%;padding:16px}
+.topo h1{font-size:21px}
+.grid,.formulario{grid-template-columns:1fr}
+.largura-total{grid-column:auto}
+.saldo-principal h2{font-size:29px}
+}
+@media print{
+.sidebar,.acoes,button{display:none!important}
+.conteudo{margin:0;width:100%}
 }
 </style>
 </head>
 
 <body>
+<div class="layout">
+<aside class="sidebar">
 
-<h1>🎒 Mochila</h1>
+    <div class="perfil-usuario">
+        <div class="avatar-branco">
+            <svg viewBox="0 0 24 24" width="42" height="42" fill="white" aria-label="Avatar">
+                <circle cx="12" cy="7" r="4"/>
+                <path d="M4 21c0-5 3-8 8-8s8 3 8 8z"/>
+            </svg>
+        </div>
+        <h3>Evelym Caroliny</h3>
+        <p class="identificacao">Identificação: 17.653.445</p>
+        <div class="linha-perfil"></div>
+        <p><strong>Curso:</strong> Técnico em Informática</p>
+        <p><strong>Perfil:</strong> Estudante</p>
+        <p><strong>Escola:</strong> Emília Cabral Mota</p>
+        <p><strong>Local:</strong> Vale Verde</p>
+    </div>
 
-<button onclick="abrirMochila()">Abrir Mochila</button>
+    <div class="logo">✦ ELEGANCE <span>BANK</span></div>
+    <div class="perfil">
+        <strong>Conta Elegance</strong>
+        <small>Conta digital demonstrativa</small>
+    </div>
 
-<div id="mochila">
-    <h2>D.H</h2>
+    <div class="menu">
+        <div class="menu-titulo">MENU PRINCIPAL</div>
+        <button class="ativo" onclick="abrirPagina('inicio',this)">🏠 Visão geral</button>
+        <button onclick="abrirPagina('movimentacoes',this)">💸 Movimentações</button>
+        <button onclick="abrirPagina('extrato',this)">📄 Extrato bancário</button>
+        <button onclick="abrirPagina('cartao',this)">💳 Minha conta</button>
 
-    <p>
-        A internet oferece diversas oportunidades para jovens aprenderem,
-        criarem projetos e desenvolverem habilidades em programação web.
-    </p>
+        <div class="menu-titulo">ADMINISTRAÇÃO</div>
+        <button onclick="abrirPagina('clientes',this)">👥 Clientes do salão</button>
+        <button onclick="abrirPagina('planejamento',this)">📊 Planejamento futuro</button>
+        <button onclick="abrirPagina('metas',this)">🎯 Metas financeiras</button>
+        <button onclick="abrirPagina('relatorios',this)">📈 Relatórios</button>
 
-    <p>
-        O empreendedorismo digital pode ser uma experiência positiva quando
-        acontece de forma equilibrada, sem prejudicar os estudos e a saúde.
-    </p>
+        <div class="menu-titulo">APRENDIZADO</div>
+        <button onclick="abrirPagina('educacao',this)">📚 Educação financeira</button>
+    </div>
+</aside>
 
-    <p>
-        O mais importante é investir no aprendizado, desenvolver conhecimentos
-        técnicos e construir uma carreira sólida para o futuro.
-    </p>
+<main class="conteudo">
+<header class="topo">
+    <div>
+        <h1 id="tituloPagina">Visão geral</h1>
+        <p>Controle financeiro pessoal e empresarial</p>
+    </div>
+    <div class="status">● Conta ativa — simulação</div>
+</header>
+
+<section class="pagina ativa" id="inicio">
+    <div class="saldo-principal">
+        <div class="rotulo">SALDO TOTAL DISPONÍVEL</div>
+        <h2 id="saldoPrincipal">R$ 90.000,00</h2>
+        <div class="rotulo">Conta Elegance • Demonstrativa</div>
+        <div class="conta-info">
+            <div>AGÊNCIA<br><strong>0001</strong></div>
+            <div>CONTA<br><strong>90876-5</strong></div>
+            <div>TIPO<br><strong>Conta digital simulada</strong></div>
+        </div>
+    </div>
+
+    <div class="grid">
+        <div class="indicador"><small>Entradas registradas</small><h2 class="verde" id="totalEntradas">R$ 0,00</h2></div>
+        <div class="indicador"><small>Saídas registradas</small><h2 class="vermelho" id="totalSaidas">R$ 0,00</h2></div>
+        <div class="indicador"><small>Resultado das movimentações</small><h2 class="roxo" id="resultadoMes">R$ 0,00</h2></div>
+    </div>
+
+    <div class="duas-colunas">
+        <div class="cartao">
+            <h3>Últimas movimentações</h3>
+            <div class="tabela-area">
+                <table>
+                    <thead><tr><th>Descrição</th><th>Data</th><th>Valor</th></tr></thead>
+                    <tbody id="ultimasMovimentacoes"></tbody>
+                </table>
+            </div>
+        </div>
+        <div class="cartao">
+            <h3>Resumo da conta</h3>
+            <p style="font-size:13px;line-height:1.8;color:#6f687a">
+                Acompanhe o dinheiro que entra e sai do seu salão, organize as despesas pessoais e planeje seus próximos objetivos.
+            </p>
+            <div class="aviso"><strong>Organização financeira:</strong> registre todas as movimentações para entender como seu dinheiro está sendo utilizado.</div>
+            <button class="botao" onclick="abrirPagina('planejamento',document.querySelectorAll('.menu button')[6])">Planejar meu futuro</button>
+        </div>
+    </div>
+</section>
+
+<section class="pagina" id="movimentacoes">
+    <div class="cartao">
+        <h3>Registrar movimentação financeira</h3>
+        <p style="color:#777184;font-size:13px;margin-bottom:18px">Cadastre recebimentos e pagamentos realizados no salão ou na vida pessoal.</p>
+        <form id="formMovimentacao">
+            <div class="formulario">
+                <div class="campo"><label>Tipo</label><select id="tipoMov"><option value="entrada">Entrada de dinheiro</option><option value="saida">Saída de dinheiro</option></select></div>
+                <div class="campo"><label>Categoria</label><select id="categoriaMov">
+                    <option>Serviços do salão</option><option>Produtos vendidos</option><option>Salário ou renda</option><option>Carro</option><option>Moto</option><option>Casa</option><option>Materiais do salão</option><option>Contas do salão</option><option>Alimentação</option><option>Outros</option>
+                </select></div>
+                <div class="campo"><label>Descrição</label><input id="descricaoMov" placeholder="Ex.: Serviço de manicure" required></div>
+                <div class="campo"><label>Valor (R$)</label><input id="valorMov" type="number" min="0.01" step="0.01" required></div>
+                <div class="campo largura-total"><label>Data</label><input id="dataMov" type="date" required></div>
+            </div>
+            <div class="acoes"><button class="botao" type="submit">Confirmar movimentação</button></div>
+        </form>
+    </div>
+</section>
+
+<section class="pagina" id="extrato">
+    <div class="cartao">
+        <h3>Extrato bancário</h3>
+        <p style="font-size:13px;color:#777184;margin-bottom:15px">Histórico das entradas e saídas registradas na conta.</p>
+        <div class="campo" style="max-width:260px;margin-bottom:17px">
+            <label>Filtrar movimentações</label>
+            <select id="filtroExtrato" onchange="atualizarTela()">
+                <option value="todas">Todas</option><option value="entrada">Somente entradas</option><option value="saida">Somente saídas</option>
+            </select>
+        </div>
+        <div class="tabela-area">
+            <table>
+                <thead><tr><th>Descrição</th><th>Categoria</th><th>Data</th><th>Tipo</th><th>Valor</th><th>Ação</th></tr></thead>
+                <tbody id="tabelaExtrato"></tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<section class="pagina" id="cartao">
+    <div class="cartao">
+        <h3>Minha conta digital</h3>
+        <p style="font-size:13px;color:#777184;margin-bottom:20px">Dados demonstrativos da conta utilizada no projeto.</p>
+        <div class="cartao-digital">
+            <strong>ELEGANCE BANK</strong>
+            <div class="chip">▦</div>
+            <div class="numero">•••• &nbsp; •••• &nbsp; •••• &nbsp; 9087</div>
+            <small>TITULAR DA CONTA</small>
+            <strong>EVELYM CAROLINY</strong>
+        </div>
+        <div class="aviso">Esta é uma conta fictícia criada para fins de estudo e organização. Os números exibidos não são dados bancários reais.</div>
+        <div class="grid">
+            <div class="indicador"><small>Agência</small><h2>0001</h2></div>
+            <div class="indicador"><small>Conta</small><h2>90876-5</h2></div>
+            <div class="indicador"><small>Modalidade</small><h2 style="font-size:17px">Digital</h2></div>
+        </div>
+    </div>
+</section>
+
+<section class="pagina" id="clientes">
+    <div class="cartao">
+        <h3>Cadastro de clientes do salão</h3>
+        <form id="formCliente">
+            <div class="formulario">
+                <div class="campo"><label>Nome do cliente</label><input id="nomeCliente" required></div>
+                <div class="campo"><label>Telefone</label><input id="telefoneCliente" placeholder="(00) 00000-0000"></div>
+                <div class="campo"><label>Serviço realizado</label><input id="servicoCliente" required placeholder="Ex.: Manicure"></div>
+                <div class="campo"><label>Valor do serviço (R$)</label><input id="valorCliente" type="number" min="0" step="0.01" required></div>
+            </div>
+            <div class="acoes"><button class="botao" type="submit">Cadastrar cliente</button></div>
+        </form>
+    </div>
+    <div class="cartao">
+        <h3>Clientes cadastrados</h3>
+        <div class="tabela-area">
+            <table>
+                <thead><tr><th>Nome</th><th>Telefone</th><th>Serviço</th><th>Valor</th><th>Ação</th></tr></thead>
+                <tbody id="tabelaClientes"></tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<section class="pagina" id="planejamento">
+    <div class="cartao">
+        <h3>📊 Planejamento financeiro para o futuro</h3>
+        <p style="color:#777184;font-size:13px;line-height:1.7">Organize seus compromissos, avalie o custo de um carro e da sua moto, controle as despesas do salão e da casa e descubra quanto poderá guardar por mês.</p>
+        <div class="aviso"><strong>Como funciona?</strong><br>Informe sua renda mensal e seus gastos. O sistema soma os compromissos e calcula o valor que sobra. Você pode alterar os valores para testar diferentes cenários.</div>
+
+        <div class="bloco-planejamento">
+            <h3>💰 1. Renda mensal</h3>
+            <p>Informe sua renda pessoal e o lucro que retira do salão. Não conte o faturamento bruto como se fosse lucro.</p>
+            <div class="campo"><label>Renda mensal total (R$)</label><input id="rendaMensal" type="number" min="0" value="5000"></div>
+        </div>
+
+        <div class="bloco-planejamento">
+            <h3>🚗 2. Planejamento do carro</h3>
+            <p>Considere prestação, combustível, seguro, impostos e manutenção.</p>
+            <div class="formulario">
+                <div class="campo"><label>Parcela mensal (R$)</label><input class="gasto-planejado" id="carroParcela" type="number" min="0" value="1200"></div>
+                <div class="campo"><label>Combustível (R$)</label><input class="gasto-planejado" id="carroCombustivel" type="number" min="0" value="350"></div>
+                <div class="campo"><label>Seguro (R$)</label><input class="gasto-planejado" id="carroSeguro" type="number" min="0" value="180"></div>
+                <div class="campo"><label>Manutenção e impostos (R$)</label><input class="gasto-planejado" id="carroOutros" type="number" min="0" value="200"></div>
+            </div>
+        </div>
+
+        <div class="bloco-planejamento">
+            <h3>🏍️ 3. Planejamento da moto</h3>
+            <p>Inclua prestação, combustível, documentação e manutenção.</p>
+            <div class="formulario">
+                <div class="campo"><label>Parcela mensal (R$)</label><input class="gasto-planejado" id="motoParcela" type="number" min="0" value="450"></div>
+                <div class="campo"><label>Combustível (R$)</label><input class="gasto-planejado" id="motoCombustivel" type="number" min="0" value="180"></div>
+                <div class="campo"><label>Seguro e documentação (R$)</label><input class="gasto-planejado" id="motoSeguro" type="number" min="0" value="100"></div>
+                <div class="campo"><label>Manutenção (R$)</label><input class="gasto-planejado" id="motoOutros" type="number" min="0" value="100"></div>
+            </div>
+        </div>
+
+        <div class="bloco-planejamento">
+            <h3>💅 4. Despesas do salão</h3>
+            <p>Separe os custos do negócio para saber quanto custa manter o salão funcionando.</p>
+            <div class="formulario">
+                <div class="campo"><label>Aluguel (R$)</label><input class="gasto-planejado" id="salaoAluguel" type="number" min="0" value="800"></div>
+                <div class="campo"><label>Materiais e produtos (R$)</label><input class="gasto-planejado" id="salaoMateriais" type="number" min="0" value="400"></div>
+                <div class="campo"><label>Energia e água (R$)</label><input class="gasto-planejado" id="salaoContas" type="number" min="0" value="180"></div>
+                <div class="campo"><label>Internet e outros (R$)</label><input class="gasto-planejado" id="salaoOutros" type="number" min="0" value="120"></div>
+            </div>
+        </div>
+
+        <div class="bloco-planejamento">
+            <h3>🏠 5. Despesas da casa</h3>
+            <p>Registre os gastos pessoais e domésticos sem misturá-los com as despesas do salão.</p>
+            <div class="formulario">
+                <div class="campo"><label>Alimentação (R$)</label><input class="gasto-planejado" id="casaAlimentacao" type="number" min="0" value="650"></div>
+                <div class="campo"><label>Água, energia e internet (R$)</label><input class="gasto-planejado" id="casaContas" type="number" min="0" value="300"></div>
+                <div class="campo"><label>Moradia (R$)</label><input class="gasto-planejado" id="casaMoradia" type="number" min="0" value="600"></div>
+                <div class="campo"><label>Outras despesas (R$)</label><input class="gasto-planejado" id="casaOutros" type="number" min="0" value="200"></div>
+            </div>
+        </div>
+
+        <div class="bloco-planejamento">
+            <h3>🎯 6. Objetivo de economia</h3>
+            <p>Escolha quanto deseja guardar por mês.</p>
+            <div class="campo"><label>Valor mensal (R$)</label><input id="economiaDesejada" type="number" min="0" value="300"></div>
+        </div>
+
+        <div class="acoes">
+            <button class="botao" onclick="calcularPlanejamento()">Calcular meu planejamento</button>
+            <button class="botao botao-secundario" onclick="salvarPlanejamento()">Salvar planejamento</button>
+            <button class="botao botao-secundario" onclick="carregarPlanejamento()">Restaurar valores salvos</button>
+        </div>
+        <div class="resultado" id="resultadoPlanejamento"><strong>Seu resultado aparecerá aqui.</strong><p>Preencha os valores e clique em calcular.</p></div>
+    </div>
+
+    <div class="cartao">
+        <h3>Como interpretar o planejamento?</h3>
+        <div class="dica"><h4>🚗 Custo real do carro</h4><p>O custo não é apenas a prestação. Combustível, seguro, impostos, pneus e revisões também pesam no orçamento.</p></div>
+        <div class="dica"><h4>🏍️ Custo real da moto</h4><p>Considere combustível, equipamentos, manutenção, seguro e documentação. Reserve dinheiro para imprevistos.</p></div>
+        <div class="dica"><h4>💅 Saúde financeira do salão</h4><p>Registre aluguel, materiais, contas e demais custos. Faturamento é o total recebido; lucro é o que sobra depois das despesas.</p></div>
+        <div class="dica"><h4>🏠 Organização da casa</h4><p>Separe as contas domésticas das despesas do salão para saber quanto custa manter cada parte.</p></div>
+    </div>
+</section>
+
+<section class="pagina" id="metas">
+    <div class="cartao">
+        <h3>Metas financeiras</h3>
+        <form id="formMeta">
+            <div class="formulario">
+                <div class="campo"><label>Nome da meta</label><input id="nomeMeta" required placeholder="Ex.: Reserva de emergência"></div>
+                <div class="campo"><label>Valor desejado (R$)</label><input id="valorMeta" type="number" min="0.01" step="0.01" required></div>
+                <div class="campo"><label>Valor já guardado (R$)</label><input id="guardadoMeta" type="number" min="0" step="0.01" value="0"></div>
+            </div>
+            <div class="acoes"><button class="botao" type="submit">Criar meta</button></div>
+        </form>
+    </div>
+    <div class="cartao"><h3>Minhas metas</h3><div id="listaMetas"></div></div>
+</section>
+
+<section class="pagina" id="relatorios">
+    <div class="cartao">
+        <h3>Relatório financeiro</h3>
+        <p style="font-size:13px;color:#777184;margin-bottom:20px">Resumo das movimentações cadastradas.</p>
+        <div class="grid">
+            <div class="indicador"><small>Total de entradas</small><h2 class="verde" id="relEntradas">R$ 0,00</h2></div>
+            <div class="indicador"><small>Total de saídas</small><h2 class="vermelho" id="relSaidas">R$ 0,00</h2></div>
+            <div class="indicador"><small>Saldo atual</small><h2 class="roxo" id="relSaldo">R$ 0,00</h2></div>
+        </div>
+        <div class="aviso" id="analiseRelatorio">Registre movimentações para gerar uma análise financeira.</div>
+        <button class="botao" onclick="window.print()">Imprimir relatório</button>
+    </div>
+</section>
+
+<section class="pagina" id="educacao">
+    <div class="cartao">
+        <h3>📚 Educação financeira e planejamento</h3>
+        <p style="font-size:13px;color:#777184;line-height:1.7">Educação financeira é a capacidade de organizar, planejar e utilizar o dinheiro de maneira consciente. Ela ajuda a tomar decisões melhores, evitar dívidas desnecessárias e construir segurança para o futuro.</p>
+        <div class="dica"><h4>1. Controle de entradas e saídas</h4><p>Entrada é todo dinheiro recebido. Saída é todo valor gasto. Acompanhar os dois permite entender a situação financeira.</p></div>
+        <div class="dica"><h4>2. Reserva de emergência</h4><p>É uma quantia guardada para situações inesperadas, como problemas de saúde, perda de renda ou consertos urgentes.</p></div>
+        <div class="dica"><h4>3. Planejamento de compras</h4><p>Antes de comprar um carro ou uma moto, avalie preço, entrada, parcelas, juros e custos de manutenção.</p></div>
+        <div class="dica"><h4>4. Separação das finanças</h4><p>O dinheiro do salão deve ser controlado separadamente do dinheiro da casa. O negócio precisa pagar seus próprios custos e ter controle de lucro.</p></div>
+        <div class="dica"><h4>5. Metas de curto, médio e longo prazo</h4><p>Defina objetivos possíveis e guarde uma quantia regularmente para alcançá-los.</p></div>
+        <div class="dica"><h4>6. Juros e financiamentos</h4><p>Compare taxa de juros, prazo, valor total pago e Custo Efetivo Total (CET). Não observe apenas o valor da prestação.</p></div>
+        <div class="dica"><h4>7. Lucro e faturamento</h4><p>Faturamento é o total recebido pelas vendas e serviços. Lucro é o que permanece depois de descontar os custos e despesas.</p></div>
+    </div>
+</section>
+
+<footer class="rodape">
+ELEGANCE BANK • Projeto demonstrativo de gestão financeira • 2026
+<br>Não é uma instituição financeira e não realiza operações bancárias reais.
+</footer>
+</main>
 </div>
 
 <script>
-function abrirMochila() {
-    var mochila = document.getElementById("mochila");
+const SALDO_INICIAL = 90000;
+let movimentacoes = JSON.parse(localStorage.getItem("elegance_movimentacoes")) || [];
+let clientes = JSON.parse(localStorage.getItem("elegance_clientes")) || [];
+let metas = JSON.parse(localStorage.getItem("elegance_metas")) || [];
 
-    if (mochila.style.display === "block") {
-        mochila.style.display = "none";
-    } else {
-        mochila.style.display = "block";
-    }
+const camposPlanejamento = [
+"rendaMensal","carroParcela","carroCombustivel","carroSeguro","carroOutros",
+"motoParcela","motoCombustivel","motoSeguro","motoOutros",
+"salaoAluguel","salaoMateriais","salaoContas","salaoOutros",
+"casaAlimentacao","casaContas","casaMoradia","casaOutros","economiaDesejada"
+];
+
+function dinheiro(valor){
+return Number(valor||0).toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
 }
-</script>
 
+function escapar(texto){
+return String(texto).replace(/[&<>"']/g,letra=>({
+"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+})[letra]);
+}
+
+function salvarDados(){
+localStorage.setItem("elegance_movimentacoes",JSON.stringify(movimentacoes));
+localStorage.setItem("elegance_clientes",JSON.stringify(clientes));
+localStorage.setItem("elegance_metas",JSON.stringify(metas));
+}
+
+function saldoAtual(){
+let entradas=movimentacoes.filter(m=>m.tipo==="entrada").reduce((s,m)=>s+Number(m.valor),0);
+let saidas=movimentacoes.filter(m=>m.tipo==="saida").reduce((s,m)=>s+Number(m.valor),0);
+return SALDO_INICIAL+entradas-saidas;
+}
+
+function totais(){
+return {
+entradas:movimentacoes.filter(m=>m.tipo==="entrada").reduce((s,m)=>s+Number(m.valor),0),
+saidas:movimentacoes.filter(m=>m.tipo==="saida").reduce((s,m)=>s+Number(m.valor),0)
+};
+}
+
+function abrirPagina(id,botao){
+document.querySelectorAll(".pagina").forEach(p=>p.classList.remove("ativa"));
+document.getElementById(id).classList.add("ativa");
+document.querySelectorAll(".menu button").forEach(b=>b.classList.remove("ativo"));
+if(botao)botao.classList.add("ativo");
+const titulos={
+inicio:"Visão geral",movimentacoes:"Movimentações",extrato:"Extrato bancário",
+cartao:"Minha conta",clientes:"Clientes do salão",planejamento:"Planejamento futuro",
+metas:"Metas financeiras",relatorios:"Relatórios",educacao:"Educação financeira"
+};
+document.getElementById("tituloPagina").textContent=titulos[id];
+atualizarTela();
+}
+
+function atualizarTela(){
+const saldo=saldoAtual(),total=totais();
+document.getElementById("saldoPrincipal").textContent=dinheiro(saldo);
+document.getElementById("totalEntradas").textContent=dinheiro(total.entradas);
+document.getElementById("totalSaidas").textContent=dinheiro(total.saidas);
+document.getElementById("resultadoMes").textContent=dinheiro(total.entradas-total.saidas);
+document.getElementById("relEntradas").textContent=dinheiro(total.entradas);
+document.getElementById("relSaidas").textContent=dinheiro(total.saidas);
+document.getElementById("relSaldo").textContent=dinheiro(saldo);
+
+const ultimas=[...movimentacoes].reverse().slice(0,5);
+document.getElementById("ultimasMovimentacoes").innerHTML=ultimas.length?
+ultimas.map(m=>`<tr><td>${escapar(m.descricao)}</td><td>${escapar(m.data)}</td>
+<td class="${m.tipo==="entrada"?"verde":"vermelho"}">${m.tipo==="entrada"?"+":"−"} ${dinheiro(m.valor)}</td></tr>`).join(""):
+`<tr><td colspan="3" class="vazio">Nenhuma movimentação registrada.</td></tr>`;
+
+const filtro=document.getElementById("filtroExtrato")?.value||"todas";
+const lista=[...movimentacoes].reverse().filter(m=>filtro==="todas"||m.tipo===filtro);
+document.getElementById("tabelaExtrato").innerHTML=lista.length?
+lista.map(m=>`<tr>
+<td>${escapar(m.descricao)}</td><td>${escapar(m.categoria)}</td><td>${escapar(m.data)}</td>
+<td><span class="etiqueta ${m.tipo}">${m.tipo==="entrada"?"Entrada":"Saída"}</span></td>
+<td class="${m.tipo==="entrada"?"verde":"vermelho"}">${dinheiro(m.valor)}</td>
+<td><button class="botao botao-perigo" onclick="excluirMovimentacao('${m.id}')">Excluir</button></td>
+</tr>`).join(""):`<tr><td colspan="6" class="vazio">Nenhuma movimentação encontrada.</td></tr>`;
+
+atualizarClientes();
+atualizarMetas();
+document.getElementById("analiseRelatorio").textContent=
+total.entradas>total.saidas?"As entradas registradas superam as saídas. Continue acompanhando os custos.":
+total.entradas<total.saidas?"As saídas registradas superam as entradas. Revise as despesas e avalie quais gastos podem ser reduzidos.":
+"As entradas e saídas registradas estão equilibradas ou ainda não existem movimentações.";
+}
+
+document.getElementById("formMovimentacao").addEventListener("submit",function(event){
+event.preventDefault();
+const tipo=document.getElementById("tipoMov").value;
+const valor=Number(document.getElementById("valorMov").value);
+if(!Number.isFinite(valor)||valor<=0){alert("Informe um valor válido.");return;}
+if(tipo==="saida"&&valor>saldoAtual()){alert("Saldo insuficiente para registrar essa saída.");return;}
+movimentacoes.push({
+id:String(Date.now())+Math.random().toString(16).slice(2),
+tipo,categoria:document.getElementById("categoriaMov").value,
+descricao:document.getElementById("descricaoMov").value.trim(),
+valor,data:document.getElementById("dataMov").value
+});
+salvarDados();this.reset();
+document.getElementById("dataMov").value=new Date().toISOString().slice(0,10);
+atualizarTela();alert("Movimentação registrada com sucesso!");
+abrirPagina("extrato",document.querySelectorAll(".menu button")[2]);
+});
+
+function excluirMovimentacao(id){
+if(!confirm("Deseja realmente excluir esta movimentação?"))return;
+movimentacoes=movimentacoes.filter(m=>m.id!==id);
+salvarDados();atualizarTela();
+}
+
+document.getElementById("formCliente").addEventListener("submit",function(event){
+event.preventDefault();
+clientes.push({
+id:String(Date.now())+Math.random().toString(16).slice(2),
+nome:document.getElementById("nomeCliente").value.trim(),
+telefone:document.getElementById("telefoneCliente").value.trim(),
+servico:document.getElementById("servicoCliente").value.trim(),
+valor:Number(document.getElementById("valorCliente").value)
+});
+salvarDados();this.reset();atualizarClientes();alert("Cliente cadastrado!");
+});
+
+function atualizarClientes(){
+document.getElementById("tabelaClientes").innerHTML=clientes.length?
+clientes.map(c=>`<tr><td>${escapar(c.nome)}</td><td>${escapar(c.telefone)}</td>
+<td>${escapar(c.servico)}</td><td>${dinheiro(c.valor)}</td>
+<td><button class="botao botao-perigo" onclick="excluirCliente('${c.id}')">Excluir</button></td></tr>`).join(""):
+`<tr><td colspan="5" class="vazio">Nenhum cliente cadastrado.</td></tr>`;
+}
+function excluirCliente(id){
+if(!confirm("Deseja excluir este cliente?"))return;
+clientes=clientes.filter(c=>c.id!==id);salvarDados();atualizarClientes();
+}
+
+document.getElementById("formMeta").addEventListener("submit",function(event){
+event.preventDefault();
+const valor=Number(document.getElementById("valorMeta").value);
+const guardado=Number(document.getElementById("guardadoMeta").value);
+if(valor<=0||guardado<0){alert("Confira os valores informados.");return;}
+metas.push({
+id:String(Date.now())+Math.random().toString(16).slice(2),
+nome:document.getElementById("nomeMeta").value.trim(),valor,guardado
+});
+salvarDados();this.reset();atualizarMetas();
+});
+
+function atualizarMetas(){
+document.getElementById("listaMetas").innerHTML=metas.length?
+metas.map(m=>{
+const percentual=Math.min(100,Math.max(0,m.guardado/m.valor*100));
+return `<div class="bloco-planejamento">
+<h3>${escapar(m.nome)}</h3><p>${dinheiro(m.guardado)} guardados de ${dinheiro(m.valor)}</p>
+<div class="progresso"><div style="width:${percentual}%"></div></div>
+<p>${percentual.toFixed(1)}% concluído</p>
+<button class="botao botao-secundario" onclick="adicionarMeta('${m.id}')">Adicionar valor guardado</button>
+<button class="botao botao-perigo" onclick="excluirMeta('${m.id}')">Excluir</button>
+</div>`;
+}).join(""):`<p class="vazio">Você ainda não criou metas financeiras.</p>`;
+}
+
+function adicionarMeta(id){
+const meta=metas.find(m=>m.id===id);if(!meta)return;
+const valor=Number(prompt("Quanto deseja acrescentar à meta?"));
+if(!Number.isFinite(valor)||valor<=0)return;
+meta.guardado+=valor;salvarDados();atualizarMetas();
+}
+function excluirMeta(id){
+if(!confirm("Deseja excluir esta meta?"))return;
+metas=metas.filter(m=>m.id!==id);salvarDados();atualizarMetas();
+}
+
+function numeroCampo(id){
+return Math.max(0,Number(document.getElementById(id).value)||0);
+}
+
+function calcularPlanejamento(){
+const renda=numeroCampo("rendaMensal");
+const carro=numeroCampo("carroParcela")+numeroCampo("carroCombustivel")+numeroCampo("carroSeguro")+numeroCampo("carroOutros");
+const moto=numeroCampo("motoParcela")+numeroCampo("motoCombustivel")+numeroCampo("motoSeguro")+numeroCampo("motoOutros");
+const salao=numeroCampo("salaoAluguel")+numeroCampo("salaoMateriais")+numeroCampo("salaoContas")+numeroCampo("salaoOutros");
+const casa=numeroCampo("casaAlimentacao")+numeroCampo("casaContas")+numeroCampo("casaMoradia")+numeroCampo("casaOutros");
+const economia=numeroCampo("economiaDesejada");
+const despesas=carro+moto+salao+casa;
+const sobra=renda-despesas;
+const restante=sobra-economia;
+const percentual=renda>0?(despesas/renda)*100:0;
+
+let avaliacao;
+if(renda===0)avaliacao="Informe sua renda mensal para obter uma análise.";
+else if(sobra<0)avaliacao="Atenção: suas despesas estão acima da renda informada. Reveja os gastos antes de assumir novas dívidas.";
+else if(restante<0)avaliacao="Sua economia desejada está acima do valor disponível. Ajuste sua meta de poupança.";
+else avaliacao="Seu planejamento apresenta saldo positivo depois das despesas e da economia desejada. Continue acompanhando os valores e reserve dinheiro para imprevistos.";
+
+document.getElementById("resultadoPlanejamento").innerHTML=`
+<strong>Resultado do seu planejamento mensal</strong>
+<div class="grid" style="margin-top:15px">
+<div class="indicador"><small>Renda mensal</small><h2 class="verde">${dinheiro(renda)}</h2></div>
+<div class="indicador"><small>Total de despesas</small><h2 class="vermelho">${dinheiro(despesas)}</h2></div>
+<div class="indicador"><small>Sobra antes de guardar</small><h2 class="roxo">${dinheiro(sobra)}</h2></div>
+</div>
+<div style="line-height:2;margin-top:18px;font-size:14px">
+<strong>Detalhamento mensal:</strong><br>
+🚗 Carro: ${dinheiro(carro)}<br>
+🏍️ Moto: ${dinheiro(moto)}<br>
+💅 Salão: ${dinheiro(salao)}<br>
+🏠 Casa: ${dinheiro(casa)}<br>
+🎯 Economia desejada: ${dinheiro(economia)}<br>
+<strong>Valor restante após guardar:</strong>
+<span class="${restante>=0?"verde":"vermelho"}">${dinheiro(restante)}</span>
+</div>
+<div class="progresso"><div style="width:${Math.min(100,percentual)}%"></div></div>
+<p>${percentual.toFixed(1)}% da renda está comprometida com as despesas informadas.</p>
+<div class="aviso">${avaliacao}</div>
+<p><strong>Projeção em 12 meses:</strong> guardando ${dinheiro(Math.max(0,restante))} por mês, você poderá acumular ${dinheiro(Math.max(0,restante)*12)}, sem considerar rendimentos ou imprevistos.</p>`;
+}
+
+function salvarPlanejamento(){
+const dados={};
+camposPlanejamento.forEach(id=>dados[id]=document.getElementById(id).value);
+localStorage.setItem("elegance_planejamento",JSON.stringify(dados));
+alert("Planejamento salvo neste navegador!");
+}
+
+function carregarPlanejamento(){
+const dados=JSON.parse(localStorage.getItem("elegance_planejamento")||"null");
+if(!dados){alert("Ainda não existe um planejamento salvo.");return;}
+camposPlanejamento.forEach(id=>{if(dados[id]!==undefined)document.getElementById(id).value=dados[id];});
+calcularPlanejamento();alert("Planejamento recuperado!");
+}
+
+document.getElementById("dataMov").value=new Date().toISOString().slice(0,10);
+atualizarTela();
+calcularPlanejamento();
+</script>
 </body>
 </html>
